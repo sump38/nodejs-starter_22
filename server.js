@@ -20,25 +20,44 @@ const html = `
     </html>
 `;
 
+
+const runSwitchFunction = (state) => {
+    switch(state) {
+        case 'Done':
+             console.log('done!');
+             break;
+         case 'Error': 
+             console.log('error occured');
+             break;
+         case 'Loading': 
+             console.log('still loading');
+             break;
+         default:
+             console.log('no setting occured');
+             break;
+     }
+}
+
+
+
 const server = http.createServer((request, response) => {
+    runSwitchFunction('abc');
     console.log(request.url);
     if(request.url === '/favicon.ico') {
         response.statusCode = 404;
         response.end();
     } else {
+        response.statusCode = 200;
         if(request.url === '/hello') {
-            response.statusCode = 200;
             response.setHeader('content-type', 'text/html');
             response.write(html);
             response.end();
         } else {
             if(request.url === '/script.js') {
-                response.statusCode = 200;
                 response.write(js);
                 response.end();
             } else {
                 const name = request.url.toString().replace('/',''); 
-                response.statusCode = 200;
                 response.setHeader('content-type', 'text/html');
                 response.write(`<html><body>Hello ${name}</body></html>`);
                 response.end();
