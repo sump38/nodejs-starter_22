@@ -23,48 +23,54 @@ const html = `
 
 const runSwitchFunction = (state) => {
     switch(state) {
-        case 'Done':
-             console.log('done!');
-             break;
-         case 'Error': 
+        case ('Done'): {
+            console.log('done!');
+            break;
+        }
+         case ('Error'): {
              console.log('error occured');
              break;
-         case 'Loading': 
+        } 
+         case 'Loading': {
              console.log('still loading');
              break;
-         default:
+        } 
+         default: {
              console.log('no setting occured');
-             break;
+             break; 
+         }
      }
 }
 
 
 
 const server = http.createServer((request, response) => {
-    runSwitchFunction('abc');
     console.log(request.url);
-    if(request.url === '/favicon.ico') {
-        response.statusCode = 404;
-        response.end();
-    } else {
-        response.statusCode = 200;
-        if(request.url === '/hello') {
+    response.statusCode = 200;
+
+    switch(request.url) {
+        case ('/favicon.ico'): {
+            response.statusCode = 404;
+            break;
+        }
+        case ('/hello'): {
             response.setHeader('content-type', 'text/html');
             response.write(html);
-            response.end();
-        } else {
-            if(request.url === '/script.js') {
-                response.write(js);
-                response.end();
-            } else {
-                const name = request.url.toString().replace('/',''); 
-                response.setHeader('content-type', 'text/html');
-                response.write(`<html><body>Hello ${name}</body></html>`);
-                response.end();
-            }
+            break;
+        }
+        case ('/script.js'): {
+            response.write(js);
+            break;
+        }
+        default: {
+            const name = request.url.toString().replace('/',''); 
+            response.setHeader('content-type', 'text/html');
+            response.write(`<html><body>Hello ${name}</body></html>`);
+            break;
         }
     }
 
+    response.end();
 
 });
 
