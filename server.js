@@ -1,6 +1,8 @@
 const express = require('express');
 const path = require('path');
 const static = express.static('public');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 
 const products = [
     {
@@ -26,7 +28,12 @@ let views = 0;
 
 const app = express();
 
+app.use(cors());
+
 app.use(static);
+
+app.use(bodyParser.json());
+
 
 app.use('/', (req, res, next) => {
     // console.log('views:' + ++views);
@@ -47,6 +54,11 @@ app.use('/redirect',(req, res) => {
 
 app.use('/products', (req, res) => {
     res.json(products);
+});
+
+app.use('/addproduct', (req,res) => {
+    products.push(req.body);
+    res.send('done');
 })
 
 app.use('/', (req, res) => {
@@ -54,4 +66,4 @@ app.use('/', (req, res) => {
 })
 
 
-app.listen(999);
+app.listen(999); 
