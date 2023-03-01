@@ -1,9 +1,10 @@
 const express = require('express');
+const path = require('path');
 
 const app = express();
 
 app.use('/',(req, res) => {
-    res.send('<html><body>hello world</body></html>');
+    res.sendFile(path.join(__dirname, 'files','index.html'));
 });
 
 app.listen(999);
