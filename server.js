@@ -3,22 +3,26 @@ const path = require('path');
 const static = express.static('public');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const cartRouter = require('./api/cart');
 
-const products = [
+global.products = [
     {
       "name" : "Black Coffee",
       "price" : 22,
-      "description": "A very important drink for programmers"
+      "description": "A very important drink for programmers",
+      "id": "000"
     },
     {
       "name" : "Black Coffee 2",
       "price" : 22,
-      "description": "A very important drink for programmers"
+      "description": "A very important drink for programmers",
+      "id": "001"
     },
     {
       "name" : "Black Coffee 3",
       "price" : 22,
-      "description": "A very important drink for programmers"
+      "description": "A very important drink for programmers",
+      "id": "002"
     }
   ]
 
@@ -34,6 +38,7 @@ app.use(static);
 
 app.use(bodyParser.json());
 
+app.use('/api', cartRouter);
 
 app.use('/', (req, res, next) => {
     // console.log('views:' + ++views);
@@ -52,7 +57,17 @@ app.use('/redirect',(req, res) => {
     // res.send('<html><body>hello world</body></html>');
 });
 
-app.use('/products', (req, res) => {
+app.use('/personalPage/favorites', (req, res) => {
+
+});
+
+app.use('/personalPage', (req, res) => {
+
+});
+
+
+
+app.get('/products', (req, res) => {
     res.json(products);
 });
 
