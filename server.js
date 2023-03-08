@@ -4,6 +4,7 @@ const static = express.static('public');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const cartRouter = require('./api/cart');
+const session = require('express-session');
 
 global.products = [
     {
@@ -32,6 +33,15 @@ let views = 0;
 
 const app = express();
 
+app.use(session({
+  secret: 'aqR7911B3 ddfdd',
+  saveUninitialized: true,
+  resave: true,
+  cookie: {
+    maxAge: 60000
+  }
+}));
+
 app.use(cors());
 
 app.use(static);
@@ -41,11 +51,19 @@ app.use(bodyParser.json());
 app.use('/api', cartRouter);
 
 app.use('/', (req, res, next) => {
-    // console.log('views:' + ++views);
-    console.log(req.url);
+    if(req.session.views) {
+      req.session.views++;
+    } else {
+      req.session.views = 1;
+    }
+    console.log(req.session.views);
     next();
     // console.log('after next');
 });
+
+app.use('/views', (req, res) => {
+  res.json(req.session.views);
+})
 
 app.use('/home', (req,res,next) => {
     console.log(req.url);

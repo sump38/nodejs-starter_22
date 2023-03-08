@@ -2,11 +2,16 @@ const express = require('express');
 
 const router = express.Router();
 
-global.cart = [];
 
+router.use('/cart', (req, res, next) => {
+    if(!req.session.cart) {
+        req.session.cart = [];
+    }
+    next();
+})
 
 router.get('/cart',(req, res) => {
-    res.json(global.cart);
+    res.json(req.session.cart);
 });
 
 router.post('/cart', (req, res) => {
@@ -16,7 +21,7 @@ router.post('/cart', (req, res) => {
             return obj.id === id;
         });
         if(index !== -1) {
-            global.cart.push({
+            req.session.cart.push({
                 id: id
             });
             res.json('success');
