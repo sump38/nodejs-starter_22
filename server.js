@@ -4,6 +4,7 @@ const static = express.static('public');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const cartRouter = require('./api/cart.api');
+const session = require('express-session');
 
 global.products = [
     {
@@ -30,6 +31,12 @@ let views = 0;
 const app = express();
 
 app.use(cors());
+app.use(session({
+  secret: 'rq1$$st',
+  resave: true,
+  saveUninitialized: true
+}));
+
 
 app.use(static);
 

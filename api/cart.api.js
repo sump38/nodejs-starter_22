@@ -6,7 +6,13 @@ const cart = [];
 const router = express.Router();
 
 router.get('/cart', (req, res) => {
-    res.json(data);
+    console.log(req.sessionID);
+    if(req.session.views) {
+        req.session.views++;
+    } else {
+        req.session.views = 1;
+    }
+    res.json(req.session.views);
 });
 
 router.post('/cart', (req, res, next) => {
