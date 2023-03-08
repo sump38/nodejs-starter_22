@@ -3,8 +3,9 @@ const path = require('path');
 const static = express.static('public');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const cartRouter = require('./api/cart.api');
 
-const products = [
+global.products = [
     {
       "name" : "Black Coffee",
       "price" : 22,
@@ -33,6 +34,8 @@ app.use(cors());
 app.use(static);
 
 app.use(bodyParser.json());
+
+app.use('/api', cartRouter);
 
 
 app.use('/', (req, res, next) => {
