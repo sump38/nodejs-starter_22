@@ -6,26 +6,37 @@ const bodyParser = require('body-parser');
 const cartRouter = require('./api/cart');
 const session = require('express-session');
 
-global.products = [
-    {
-      "name" : "Black Coffee",
-      "price" : 22,
-      "description": "A very important drink for programmers",
-      "id": "000"
-    },
-    {
-      "name" : "Black Coffee 2",
-      "price" : 22,
-      "description": "A very important drink for programmers",
-      "id": "001"
-    },
-    {
-      "name" : "Black Coffee 3",
-      "price" : 22,
-      "description": "A very important drink for programmers",
-      "id": "002"
-    }
-  ]
+const { connectToDb, getDB } = require('./db/database');
+
+
+
+// const client = new MongoClient(uri);
+
+
+
+
+
+
+// global.products = [
+//     {
+//       "name" : "Black Coffee",
+//       "price" : 22,
+//       "description": "A very important drink for programmers",
+//       "id": "000"
+//     },
+//     {
+//       "name" : "Black Coffee 2",
+//       "price" : 22,
+//       "description": "A very important drink for programmers",
+//       "id": "001"
+//     },
+//     {
+//       "name" : "Black Coffee 3",
+//       "price" : 22,
+//       "description": "A very important drink for programmers",
+//       "id": "002"
+//     }
+//   ]
 
 
 let views = 0;
@@ -86,7 +97,13 @@ app.use('/personalPage', (req, res) => {
 
 
 app.get('/products', (req, res) => {
-    res.json(products);
+  const db = getDB();
+  const collection = db.collection('products');
+  collection.find().toArray().then(products => {
+      res.send(products);
+  }).catch(err => {
+    console.log(err);
+  })
 });
 
 app.use('/addproduct', (req,res) => {
@@ -99,4 +116,28 @@ app.use('/', (req, res) => {
 })
 
 
-app.listen(999); 
+connectToDb(()=> {
+  app.listen(999);
+});
+
+
+// client.connect().then(c => {
+//   global.db = c.db('tea-shop-db');
+//   app.listen(999);
+// const collection = db.collection('products');
+// collection.find().toArray().then(items => {
+//   console.log(items);
+// });
+
+// collection.insertOne({
+//   name : "Black Coffee",
+//   price : 22,
+//   description: "A very important drink for programmers"
+// }).then(result => {
+//   console.log(result);
+// });
+//
+// console.log('done');
+// }).catch(err => {
+// console.log(err);
+// })
