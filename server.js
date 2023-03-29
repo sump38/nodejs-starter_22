@@ -7,40 +7,9 @@ const cartRouter = require('./api/cart');
 const session = require('express-session');
 
 const { connectToDb, getDB } = require('./db/database');
-
-
-
-// const client = new MongoClient(uri);
-
-
-
-
-
-
-// global.products = [
-//     {
-//       "name" : "Black Coffee",
-//       "price" : 22,
-//       "description": "A very important drink for programmers",
-//       "id": "000"
-//     },
-//     {
-//       "name" : "Black Coffee 2",
-//       "price" : 22,
-//       "description": "A very important drink for programmers",
-//       "id": "001"
-//     },
-//     {
-//       "name" : "Black Coffee 3",
-//       "price" : 22,
-//       "description": "A very important drink for programmers",
-//       "id": "002"
-//     }
-//   ]
-
+const { ObjectId } = require('mongodb');
 
 let views = 0;
-
 
 const app = express();
 
@@ -96,6 +65,9 @@ app.use('/personalPage', (req, res) => {
 
 
 
+
+
+
 app.get('/products', (req, res) => {
   const db = getDB();
   const collection = db.collection('products');
@@ -104,11 +76,36 @@ app.get('/products', (req, res) => {
   }).catch(err => {
     console.log(err);
   })
+
+  console.log('done!');
 });
 
-app.use('/addproduct', (req,res) => {
-    products.push(req.body);
-    res.send('done');
+app.post('/updateproduct', (req, res) => {
+  const db = getDB();
+  const collection = db.collection('products');
+  const id = req.body._id;
+  const item = req.body.data;
+  collection.updateOne({_id: new ObjectId(id)},{
+    $set : {
+      ...item
+    }
+  }).then(data => {
+    res.send(data);
+  })
+
+});
+
+app.post('/addproduct', (req,res) => {
+    const db = getDB();
+    const collection = db.collection('products');
+    const newProduct = req.body;
+    //check data! {name, price, description}
+
+    collection.insertOne(newProduct).then(data => {
+      console.log(data);
+      console.log('done');
+      res.send(data);
+    });
 })
 
 app.use('/', (req, res) => {
@@ -119,25 +116,3 @@ app.use('/', (req, res) => {
 connectToDb(()=> {
   app.listen(999);
 });
-
-
-// client.connect().then(c => {
-//   global.db = c.db('tea-shop-db');
-//   app.listen(999);
-// const collection = db.collection('products');
-// collection.find().toArray().then(items => {
-//   console.log(items);
-// });
-
-// collection.insertOne({
-//   name : "Black Coffee",
-//   price : 22,
-//   description: "A very important drink for programmers"
-// }).then(result => {
-//   console.log(result);
-// });
-//
-// console.log('done');
-// }).catch(err => {
-// console.log(err);
-// })

@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, Db } = require('mongodb');
 require('dotenv').config();
 
 
@@ -19,6 +19,10 @@ module.exports.connectToDb = (callback) => {
     });
 }
 
+/**
+ * 
+ * @returns {Db}
+ */
 module.exports.getDB = () => {
     return db;
 }
